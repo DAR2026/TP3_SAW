@@ -14,23 +14,27 @@ on:
   pull_request:
     branches: [ "dev" ]
 
+permissions:
+  contents: read
+  dependency-graph: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+      - name: Build
+        run: mvn -B clean package --file pom.xml
 
-      # Optionnel : Soumission du graphe de dépendances
       - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v4
+        uses: advanced-security/maven-dependency-submission-action@v1
